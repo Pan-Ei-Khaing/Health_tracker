@@ -1,34 +1,35 @@
 'use client';
-import { useState } from 'react';
-
-const foodDatabase = [
-  { name: 'Banana', level: 'safe', reason: 'Low acidity, easy to digest' },
-  { name: 'Oatmeal', level: 'safe', reason: 'Whole grain, low fat' },
-  { name: 'Chicken', level: 'safe', reason: 'Lean protein, low fat when grilled' },
-  { name: 'Rice', level: 'safe', reason: 'Easy to digest, low acidity' },
-  { name: 'Green vegetables', level: 'safe', reason: 'Low fat, high fiber' },
-  { name: 'Ginger', level: 'safe', reason: 'Natural anti-inflammatory' },
-  { name: 'Coffee', level: 'avoid', reason: 'High acidity, relaxes LES' },
-  { name: 'Tomato', level: 'avoid', reason: 'High acidity' },
-  { name: 'Chocolate', level: 'avoid', reason: 'High fat, contains caffeine' },
-  { name: 'Fried chicken', level: 'avoid', reason: 'High fat, hard to digest' },
-  { name: 'Citrus', level: 'avoid', reason: 'High acidity' },
-  { name: 'Peppermint', level: 'avoid', reason: 'Relaxes LES muscles' },
-  { name: 'Garlic', level: 'moderate', reason: 'Can trigger reflux in some' },
-  { name: 'Onion', level: 'moderate', reason: 'Can trigger reflux in some' },
-  { name: 'Cheese', level: 'moderate', reason: 'High fat content' },
-  { name: 'Bread', level: 'moderate', reason: 'May contain yeast' },
-];
+import { useState, useEffect } from 'react';
 
 export default function FoodSafety() {
+  const [foods, setFoods] = useState([]);
   const [search, setSearch] = useState('');
-  const [result, setResult] = useState(null);
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch all foods on load
+  useEffect(() => {
+    fetch('http://localhost:3001/api/foods')
+      .then(res => res.json())
+      .then(data => {
+        setFoods(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        setLoading(false);
+      });
+  }, []);
 
   const handleSearch = () => {
-    const found = foodDatabase.find(f => 
-      f.name.toLowerCase().includes(search.toLowerCase())
+    if (!search.trim()) {
+      setResults([]);
+      return;
+    }
+    const filtered = foods.filter(f => 
+      f.food_name.toLowerCase().includes(search.toLowerCase())
     );
-    setResult(found || null);
+    setResults(filtered);
   };
 
   const getLevelColor = (level) => {
@@ -49,8 +50,17 @@ export default function FoodSafety() {
     }
   };
 
+  const getLevelText = (level) => {
+    switch(level) {
+      case 'safe': return 'Safe for GERD';
+      case 'moderate': return 'Moderate - eat small amounts';
+      case 'avoid': return 'Avoid - triggers reflux';
+      default: return '';
+    }
+  };
+
   return (
-    <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
+    <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
       <h1>🔍 Food Safety Guide</h1>
       <p>Search if a food is safe for GERD</p>
 
@@ -59,7 +69,8 @@ export default function FoodSafety() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search food (e.g., Banana)"
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          placeholder="Search food (e.g., Banana, Coffee, Rice)"
           style={{
             flex: 1,
             padding: '0.75rem',
@@ -83,31 +94,83 @@ export default function FoodSafety() {
         </button>
       </div>
 
-      {result && (
-        <div style={{
-          padding: '1.5rem',
-          border: `3px solid ${getLevelColor(result.level)}`,
-          borderRadius: '12px',
-          backgroundColor: '#f9f9f9'
-        }}>
-          <h2 style={{ margin: 0, color: getLevelColor(result.level) }}>
-            {getLevelEmoji(result.level)} {result.name}
-          </h2>
-          <p><strong>Status:</strong> {result.level.toUpperCase()}</p>
-          <p><strong>Reason:</strong> {result.reason}</p>
-        </div>
-      )}
+      {loading ? (
+        <p>Loading food database...</p>
+      ) : (
+        <>
+          {results.length > 0 && (
+            <div style={{ marginBottom: '2rem' }}>
+              <h3>Search Results:</h3>
+              {results.map(food => (
+                <div key={food.food_id} style={{
+                  padding: '1rem',
+                  marginBottom: '0.5rem',
+                  border: `3px solid ${getLevelColor(food.gerd_level)}`,
+                  borderRadius: '12px',
+                  backgroundColor: '#f9f9f9'
+                }}>
+                  <h2 style={{ margin: 0, color: getLevelColor(food.gerd_level) }}>
+                    {getLevelEmoji(food.gerd_level)} {food.food_name}
+                  </h2>
+                  <p style={{ margin: '0.5rem 0' }}>
+                    <strong>Category:</strong> {food.category}
+                  </p>
+                  <p style={{ margin: '0.5rem 0' }}>
+                    <strong>Status:</strong> {getLevelText(food.gerd_level)}
+                  </p>
+                  <p style={{ margin: '0.5rem 0' }}>
+                    <strong>Calories:</strong> {food.calories_per_100g} cal per 100g
+                  </p>
+                  <p style={{ margin: '0.5rem 0' }}>
+                    <strong>Why:</strong> {food.reason}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
 
-      {!result && search && (
-        <p>No data found for "{search}"</p>
-      )}
+          <div>
+            <h3>All Foods ({foods.length} items)</h3>
+            <div style={{ display: 'grid', gap: '0.5rem', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}>
+              {foods.map(food => (
+                <div key={food.food_id} style={{
+                  padding: '0.75rem',
+                  border: `2px solid ${getLevelColor(food.gerd_level)}`,
+                  borderRadius: '8px',
+                  backgroundColor: '#f9f9f9',
+                  cursor: 'pointer'
+                }}
+                onClick={() => {
+                  setSearch(food.food_name);
+                  handleSearch();
+                }}
+                >
+                  <span style={{ fontSize: '1.2rem' }}>{getLevelEmoji(food.gerd_level)}</span>
+                  <span style={{ marginLeft: '0.5rem' }}>{food.food_name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
-      <div style={{ marginTop: '2rem' }}>
-        <h3>Legend</h3>
-        <p>✅ Safe - Good for GERD</p>
-        <p>⚠️ Moderate - Eat in small amounts</p>
-        <p>❌ Avoid - Trigger foods</p>
-      </div>
+          <div style={{ marginTop: '2rem' }}>
+            <h3>Legend</h3>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '1.5rem' }}>✅</span>
+                <span><strong>Safe</strong> - Good for GERD</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '1.5rem' }}>⚠️</span>
+                <span><strong>Moderate</strong> - Small amounts only</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '1.5rem' }}>❌</span>
+                <span><strong>Avoid</strong> - Trigger foods</span>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
