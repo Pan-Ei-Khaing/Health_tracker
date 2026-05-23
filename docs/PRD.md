@@ -2,7 +2,7 @@
 
 ## 1. Product Overview
 
-**Product name:** Stomach Care Platform
+**Product name:** HealGut
 
 **Current project name:** GERD Diet Guide / Health Tracker
 
