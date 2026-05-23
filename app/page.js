@@ -1,97 +1,55 @@
-'use client';
 import Link from 'next/link';
+import Nav from './components/Nav';
+import { foods } from './data/foods';
+
+const features = [
+  { href: '/food-safety', icon: '🔍', title: 'IBS & GERD Food Safety', text: 'Search foods, compare IBS and GERD safety levels, and view safer alternatives.' },
+  { href: '/diet-plan', icon: '📋', title: 'Diet Plan Generator', text: 'Create a simple meal plan for IBS, GERD, or both with calorie targets.' },
+  { href: '/calorie-calculator', icon: '🍽️', title: 'Meal Calculator', text: 'Build meals, calculate calories, and see warnings for risky foods.' },
+  { href: '/symptom-tracker', icon: '🩺', title: 'Local Symptom Tracker', text: 'Save symptom logs locally first, including severity, stress, sleep, and related meals.' },
+  { href: '/trigger-journal', icon: '📓', title: 'Trigger Journal', text: 'Track suspected food and lifestyle triggers and find repeated patterns.' },
+  { href: '/education', icon: '📚', title: 'Patient Education', text: 'Learn about IBS, GERD, low-FODMAP basics, lifestyle tips, and warning signs.' },
+];
 
 export default function Home() {
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      padding: '2rem',
-      fontFamily: 'system-ui, sans-serif',
-      maxWidth: '900px',
-      margin: '0 auto',
-      backgroundColor: '#f0fdf4'
-    }}>
-      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-        <h1 style={{ fontSize: '2.5rem', color: '#2c5f2d', marginBottom: '0.5rem' }}>🍏 GERD Diet Guide</h1>
-        <p style={{ fontSize: '1.2rem', color: '#666' }}>
-          Help GERD patients identify safe foods & maintain a healthy diet
-        </p>
-      </div>
-
-      <div style={{ 
-        display: 'grid', 
-        gap: '1.5rem',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'
-      }}>
-        <Link href="/food-safety" style={{ textDecoration: 'none' }}>
-          <div style={{
-            padding: '2rem',
-            border: '3px solid #22c55e',
-            borderRadius: '16px',
-            cursor: 'pointer',
-            textAlign: 'center',
-            backgroundColor: '#fff',
-            transition: 'transform 0.2s, box-shadow 0.2s',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-          }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
-            <h2 style={{ color: '#22c55e', margin: '0 0 0.5rem 0' }}>Food Safety Guide</h2>
-            <p style={{ color: '#666', margin: 0 }}>
-              Check if a food is safe for GERD. Search 75+ foods with safety levels
-            </p>
+    <main className="page">
+      <Nav />
+      <section className="hero">
+        <div style={{ maxWidth: 850 }}>
+          <span className="badge" style={{ background: '#dcfce7', color: '#166534' }}>HealGut • IBS & GERD equally</span>
+          <h1 style={{ fontSize: '3.3rem', lineHeight: 1.05, margin: '18px 0 12px' }}>Stomach care platform for IBS and GERD patients</h1>
+          <p style={{ fontSize: '1.2rem', color: '#496153', lineHeight: 1.7 }}>
+            Help patients search safe foods, plan stomach-friendly meals, calculate calories, log symptoms locally, and discover personal triggers. English first, with Burmese/Myanmar support planned next.
+          </p>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 22 }}>
+            <Link className="primary" style={{ textDecoration: 'none' }} href="/food-safety">Start food search</Link>
+            <Link className="secondary" style={{ textDecoration: 'none' }} href="/symptom-tracker">Log symptoms</Link>
           </div>
-        </Link>
+        </div>
+      </section>
 
-        <Link href="/diet-plan" style={{ textDecoration: 'none' }}>
-          <div style={{
-            padding: '2rem',
-            border: '3px solid #3b82f6',
-            borderRadius: '16px',
-            cursor: 'pointer',
-            textAlign: 'center',
-            backgroundColor: '#fff',
-            transition: 'transform 0.2s, box-shadow 0.2s',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-          }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📋</div>
-            <h2 style={{ color: '#3b82f6', margin: '0 0 0.5rem 0' }}>Diet Plan Generator</h2>
-            <p style={{ color: '#666', margin: 0 }}>
-              Generate personalized meal plans based on your weight, height & goals
-            </p>
-          </div>
-        </Link>
+      <section className="grid grid-3" style={{ marginTop: 24 }}>
+        {features.map((feature) => (
+          <Link key={feature.href} href={feature.href} style={{ textDecoration: 'none' }}>
+            <article className="card" style={{ padding: 22, height: '100%' }}>
+              <div style={{ fontSize: '2.4rem' }}>{feature.icon}</div>
+              <h2 style={{ color: '#14532d', marginBottom: 8 }}>{feature.title}</h2>
+              <p style={{ color: '#52685a', lineHeight: 1.6 }}>{feature.text}</p>
+            </article>
+          </Link>
+        ))}
+      </section>
 
-        <Link href="/calorie-calculator" style={{ textDecoration: 'none' }}>
-          <div style={{
-            padding: '2rem',
-            border: '3px solid #f59e0b',
-            borderRadius: '16px',
-            cursor: 'pointer',
-            textAlign: 'center',
-            backgroundColor: '#fff',
-            transition: 'transform 0.2s, box-shadow 0.2s',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-          }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🍎</div>
-            <h2 style={{ color: '#f59e0b', margin: '0 0 0.5rem 0' }}>Meal Calculator</h2>
-            <p style={{ color: '#666', margin: 0 }}>
-              Calculate calories for your meals. Build balanced GERD-safe meals
-            </p>
-          </div>
-        </Link>
-      </div>
+      <section className="grid grid-3" style={{ marginTop: 24 }}>
+        <div className="card" style={{ padding: 22 }}><strong>{foods.length}+ foods</strong><p>Includes global and Myanmar/local foods with IBS and GERD levels.</p></div>
+        <div className="card" style={{ padding: 22 }}><strong>Local-first logs</strong><p>Symptoms and triggers are stored in the browser before account features are added.</p></div>
+        <div className="card" style={{ padding: 22 }}><strong>Medical safety</strong><p>General education only. The app does not diagnose or replace healthcare professionals.</p></div>
+      </section>
 
-      <div style={{ marginTop: '3rem', textAlign: 'center', padding: '1.5rem', backgroundColor: '#fff', borderRadius: '12px' }}>
-        <h3 style={{ color: '#2c5f2d', marginTop: 0 }}>What is GERD?</h3>
-        <p style={{ color: '#666', maxWidth: '600px', margin: '0 auto' }}>
-          GERD (Gastroesophageal Reflux Disease) is a chronic digestive disease where stomach acid flows back into the esophagus, causing irritation. 
-          Diet plays a crucial role in managing GERD symptoms.
-        </p>
-      </div>
-
-      <div style={{ marginTop: '2rem', textAlign: 'center', color: '#999', fontSize: '0.9rem' }}>
-        <p>Built for GERD patients who want to eat healthy • 75+ foods catalogued</p>
-      </div>
-    </div>
+      <p className="disclaimer" style={{ marginTop: 24 }}>
+        This app provides general educational information only. It is not a medical diagnosis or treatment plan. Please consult a qualified healthcare professional for personal medical advice.
+      </p>
+    </main>
   );
 }
