@@ -480,10 +480,12 @@ The MVP is complete when:
 - Add dietitian notes
 - Add multi-language support
 
-## 16. Open Questions
+## 16. Product Decisions
 
-- Should the platform focus first on GERD, IBS, or both equally?
-- Should user health logs be saved locally first before adding accounts?
-- Which languages should be supported after English?
-- Should food data be reviewed by a doctor or nutritionist before public launch?
-- Should the app include Myanmar/local foods in the food database?
+The following open questions have been answered and should guide implementation:
+
+- **Platform focus:** Support **IBS and GERD equally** from the first expanded version.
+- **Health log storage:** Save user health logs **locally first** before adding user accounts or cloud sync.
+- **Language support:** Support **English first**, then add **Burmese/Myanmar language** support.
+- **Medical review:** Food data does **not need doctor or nutritionist review for now**, but the app must keep clear medical disclaimers and avoid presenting content as diagnosis or treatment.
+- **Local food database:** Include **Myanmar/local foods** in the food database, with IBS and GERD safety levels where possible.
