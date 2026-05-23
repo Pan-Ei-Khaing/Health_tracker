@@ -1,34 +1,45 @@
-# GERD Diet Guide
+# Stomach Care Platform
 
-A web application to help GERD patients identify safe foods, avoid trigger foods, and follow a healthy meal plan to maintain or gain weight without worsening symptoms.
+A web application to help patients with stomach conditions such as **IBS** and **GERD** identify safer foods, avoid personal triggers, plan stomach-friendly meals, calculate calories, and track symptoms.
+
+> Full product requirements are documented in [`docs/PRD.md`](docs/PRD.md).
 
 ## Product Vision
 
-Help GERD patients easily identify safe foods, avoid trigger foods, and follow a healthy meal plan to maintain or gain weight without worsening symptoms.
+Help IBS and GERD patients easily understand food safety, identify triggers, follow a healthy meal plan, and track symptoms without replacing professional medical advice.
 
 ## Problem Statement
 
-Many GERD patients do not know:
-- Which foods trigger acid reflux
-- How to build a safe diet plan
-- How to gain weight without triggering reflux
+Many stomach disease patients do not know:
+- Which foods trigger acid reflux, bloating, diarrhea, constipation, cramps, or stomach pain
+- How IBS trigger foods can differ from GERD trigger foods
+- How to build a safe diet plan for their condition
+- How to track meals and symptoms to find personal patterns
+- How to prepare useful history for doctors or dietitians
 
-Most information online is scattered and not personalized.
+Most information online is scattered, generic, and not personalized.
 
 ## Product Goal
 
-Provide a simple web tool that:
-- Suggests GERD-safe foods
-- Generates diet plans for weight gain
-- Calculates daily calories
-- Helps users choose safe meals
+Provide a simple web platform that:
+- Suggests IBS-safe and GERD-safe foods
+- Generates diet plans for weight maintenance, weight gain, or weight loss
+- Calculates daily calories and meal calories
+- Helps users choose safer meals
+- Helps users track symptoms and possible triggers
+- Provides patient-friendly education about IBS and GERD
 
 ## Target Users
 
 - GERD patients
-- People who want to gain weight safely with GERD
+- IBS patients
+- People with bloating, reflux, stomach pain, constipation, diarrhea, or indigestion
+- People who want to gain or maintain weight safely while managing stomach symptoms
+- Caregivers, dietitians, or doctors who need food/symptom history
 
-## Key Features
+## Current MVP Features
+
+These features are already implemented or partially implemented in this repository:
 
 ### 1️⃣ Food Safety Guide
 Users can check if a food is safe for GERD.
@@ -67,6 +78,18 @@ User can:
 - View history
 
 Guest users can still use basic tools.
+
+## Planned Platform Features
+
+These features are defined in the PRD for the IBS/GERD patient platform:
+- IBS and GERD food safety comparison
+- Condition filter: IBS, GERD, or both
+- Symptom tracker
+- Trigger journal
+- Weekly symptom summary
+- Education section for IBS, GERD, low-FODMAP guidance, lifestyle tips, and doctor warning signs
+- Optional user account to save meals, symptoms, and diet plans
+- Doctor/dietitian report export
 
 ## User Flow
 
@@ -152,10 +175,16 @@ Optional: Login to Save Data
 
 ## MVP (Minimum Viable Product)
 
-First version should include only:
+Current MVP includes:
 - ✅ Food safety guide
 - ✅ Diet plan generator
 - ✅ Calorie calculator
+
+Next MVP improvements from the PRD:
+- ✅ Add IBS food safety levels
+- ✅ Add symptom tracker
+- ✅ Add trigger journal
+- ✅ Add education section
 
 ## Tech Stack
 
