@@ -7,22 +7,22 @@ const plans = {
     breakfast: ['Oatmeal with banana', 'Rice porridge with egg white'],
     lunch: ['Grilled chicken with white rice and carrots', 'Steamed fish with rice'],
     dinner: ['Pumpkin soup with rice crackers', 'Baked fish with potato'],
-    snack: ['Plain low-fat yogurt', 'Papaya slices'],
-    tips: ['Choose low-fat meals', 'Avoid coffee, chili, tomato, fried foods, chocolate, alcohol, and mint', 'Eat smaller meals and avoid eating within 3 hours of bedtime'],
+    snack: ['Plain low-fat yogurt', 'Small unsalted sunflower seed portion with papaya'],
+    tips: ['Choose low-fat meals', 'Keep seeds and nuts to small unsalted portions because fat can trigger GERD', 'Avoid coffee, chili, tomato, fried foods, chocolate, alcohol, and mint', 'Eat smaller meals and avoid eating within 3 hours of bedtime'],
   },
   ibs: {
     breakfast: ['Rice porridge with banana', 'Oatmeal with lactose-free milk'],
     lunch: ['Chicken rice without onion/garlic', 'Rice noodles with egg and cucumber'],
     dinner: ['Fish soup with rice', 'Firm tofu with rice and carrots'],
-    snack: ['Rice crackers', 'Small papaya serving'],
-    tips: ['Start with low-FODMAP style meals', 'Limit onion, garlic, beans, high-fat food, and carbonated drinks', 'Track personal tolerance because IBS triggers differ by person'],
+    snack: ['Rice crackers', 'Pumpkin seeds or sunflower seeds (1 tbsp)'],
+    tips: ['Start with low-FODMAP style meals', 'Use small portions for edible seeds and nuts, and track tolerance', 'Limit onion, garlic, beans, high-fat food, and carbonated drinks', 'Track personal tolerance because IBS triggers differ by person'],
   },
   both: {
     breakfast: ['Plain rice congee with banana', 'Oatmeal with papaya'],
     lunch: ['Steamed fish with white rice and cucumber', 'Mild chicken rice without chili/onion/garlic'],
     dinner: ['Clear chicken soup with rice noodles', 'Pumpkin soup with egg white'],
-    snack: ['Rice crackers', 'Cantaloupe or papaya'],
-    tips: ['Keep meals mild, low-fat, and non-spicy', 'Avoid caffeine, carbonated drinks, chili, onion, garlic, tomato, and fried foods', 'Use the symptom tracker to personalize the plan'],
+    snack: ['Rice crackers', 'Soaked chia seeds (1 tsp) with papaya'],
+    tips: ['Keep meals mild, low-fat, and non-spicy', 'For seeds/nuts, choose tiny unsalted portions such as sunflower, pumpkin, chia, flax, or sesame and track tolerance', 'Avoid caffeine, carbonated drinks, chili, onion, garlic, tomato, and fried foods', 'Use the symptom tracker to personalize the plan'],
   },
 };
 

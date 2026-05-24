@@ -21,9 +21,9 @@ export default function FoodSafety() {
       <Nav />
       <section className="hero">
         <h1 style={{ fontSize: '2.6rem', margin: 0 }}>🔍 Food Safety Guide</h1>
-        <p style={{ color: '#4b6354', fontSize: '1.1rem' }}>Search foods and compare IBS and GERD safety levels. Includes Myanmar/local foods.</p>
+        <p style={{ color: '#4b6354', fontSize: '1.1rem' }}>Search foods and compare IBS and GERD safety levels. Includes Myanmar/local foods plus edible seeds and nuts such as sunflower seeds.</p>
         <div className="grid grid-3" style={{ marginTop: 18 }}>
-          <div><label className="label">Search food</label><input className="input" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="e.g., Mohinga, coffee, banana" /></div>
+          <div><label className="label">Search food</label><input className="input" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="e.g., sunflower seeds, Mohinga, coffee" /></div>
           <div><label className="label">Condition filter</label><select className="input" value={condition} onChange={(e) => setCondition(e.target.value)}><option value="both">Both IBS + GERD</option><option value="ibs">IBS only</option><option value="gerd">GERD only</option></select></div>
           <div><label className="label">Category</label><select className="input" value={category} onChange={(e) => setCategory(e.target.value)}>{categories.map((cat) => <option key={cat}>{cat}</option>)}</select></div>
         </div>
