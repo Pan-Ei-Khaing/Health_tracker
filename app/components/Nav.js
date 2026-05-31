@@ -9,7 +9,6 @@ export default function Nav() {
     ['/calorie-calculator', '🍽️ Meal Calculator'],
     ['/symptom-tracker', '🩺 Symptoms'],
     ['/trigger-journal', '📓 Triggers'],
-    ['/dashboard', '📊 Dashboard'],
     ['/education', '📚 Education'],
   ];
   return <nav className="nav">{links.map(([href, label]) => <Link key={href} href={href}>{label}</Link>)}<AuthStatus /></nav>;
