@@ -11,8 +11,8 @@ export default function AuthStatus() {
   }, []);
 
   return (
-    <Link href="/login">
-      {user ? `👤 ${user.name || 'Profile'}` : '👤 Login'}
+    <Link href={user ? '/dashboard' : '/login'}>
+      {user ? `👤 ${user.name || 'Dashboard'}` : '👤 Login'}
     </Link>
   );
 }

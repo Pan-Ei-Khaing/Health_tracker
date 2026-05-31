@@ -26,9 +26,10 @@ CREATE DATABASE health_clinic;
 # Copy the example env file
 cp .env.example .env
 
-# Edit .env with your database credentials and Google OAuth Client ID
+# Edit .env with your database credentials, Google OAuth Client ID, and JWT secret
 # DATABASE_URL=postgresql://postgres:***@localhost:5432/health_clinic
 # GOOGLE_CLIENT_ID=your-google-oauth-client-id.apps.googleusercontent.com
+# JWT_SECRET=change-this-to-a-long-random-secret
 ```
 
 ### 3. Run Schema
@@ -59,7 +60,7 @@ Server will run on http://localhost:3001
 | GET | /api/users/:id | Get user by ID |
 | PUT | /api/users/:id | Update user profile |
 | DELETE | /api/users/:id | Delete user |
-| POST | /api/auth/google | Register/login with Google credential |
+| POST | /api/auth/google | Register/login with Google credential, returns user + JWT token + /dashboard redirect |
 | GET | /api/foods | Get all foods |
 | GET | /api/foods/search?q=banana | Search foods |
 | GET | /api/foods/:id | Get food by ID |

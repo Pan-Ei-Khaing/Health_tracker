@@ -3,10 +3,13 @@ const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
 const { OAuth2Client } = require('google-auth-library');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = process.env.PORT || 3001;
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const jwtSecret = process.env.JWT_SECRET || 'dev-only-health-tracker-secret-change-before-production';
+const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '7d';
 
 // Middleware
 app.use(cors());
@@ -30,7 +33,7 @@ app.get('/', (req, res) => {
     message: 'Health Tracker backend is running',
     endpoints: {
       users: '/api/users',
-      googleLogin: '/api/auth/google',
+      googleLogin: '/api/auth/google (returns user + JWT token + /dashboard redirect)',
       foods: '/api/foods',
       searchFoods: '/api/foods/search?q=banana',
       calculateCalories: '/api/calculate',
@@ -43,6 +46,24 @@ app.get('/', (req, res) => {
 });
 
 const publicUserFields = 'user_id, name, email, google_id, avatar_url, auth_provider, created_at, updated_at';
+
+const createSessionToken = (user) => jwt.sign(
+  {
+    user_id: user.user_id,
+    email: user.email,
+    name: user.name,
+    auth_provider: user.auth_provider,
+  },
+  jwtSecret,
+  { expiresIn: jwtExpiresIn }
+);
+
+const authResponse = (user, message = 'Login successful') => ({
+  message,
+  user,
+  token: createSessionToken(user),
+  redirectTo: '/dashboard',
+});
 
 // Get all users
 app.get('/api/users', async (req, res) => {
@@ -70,7 +91,7 @@ app.post('/api/users', async (req, res) => {
        RETURNING ${publicUserFields}`,
       [name || null, email, avatar_url || null]
     );
-    res.status(201).json(result.rows[0]);
+    res.status(201).json(authResponse(result.rows[0], 'Local profile ready'));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -146,7 +167,9 @@ app.post('/api/auth/google', async (req, res) => {
       [payload.name || payload.email, payload.email, payload.sub, payload.picture || null]
     );
 
-    res.json({ user: result.rows[0] });
+    const user = result.rows[0];
+    const isNewUser = user.created_at && user.updated_at && new Date(user.created_at).getTime() === new Date(user.updated_at).getTime();
+    res.json(authResponse(user, isNewUser ? 'Google account created' : 'Google login successful'));
   } catch (err) {
     res.status(401).json({ error: 'Google login failed', details: err.message });
   }
