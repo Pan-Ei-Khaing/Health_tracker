@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-1. **PostgreSQL** installed
+1. **PostgreSQL 17** installed
 2. **Node.js** installed
 
 ## Setup Steps
@@ -14,7 +14,7 @@
 psql -U postgres
 
 # Create database
-CREATE DATABASE gerd_diet_guide;
+CREATE DATABASE health_clinic;
 
 # Exit psql
 \q
@@ -26,15 +26,16 @@ CREATE DATABASE gerd_diet_guide;
 # Copy the example env file
 cp .env.example .env
 
-# Edit .env with your database credentials
-# DATABASE_URL=postgresql://username:password@localhost:5432/gerd_diet_guide
+# Edit .env with your database credentials and Google OAuth Client ID
+# DATABASE_URL=postgresql://postgres:***@localhost:5432/health_clinic
+# GOOGLE_CLIENT_ID=your-google-oauth-client-id.apps.googleusercontent.com
 ```
 
 ### 3. Run Schema
 
 ```bash
 # Run the schema to create tables and seed data
-psql -U postgres -d gerd_diet_guide -f schema.sql
+psql -U postgres -d health_clinic -f schema.sql
 ```
 
 ### 4. Install Dependencies & Start Server
@@ -53,11 +54,19 @@ Server will run on http://localhost:3001
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
+| GET | /api/users | Get all users |
+| POST | /api/users | Create/register local user profile |
+| GET | /api/users/:id | Get user by ID |
+| PUT | /api/users/:id | Update user profile |
+| DELETE | /api/users/:id | Delete user |
+| POST | /api/auth/google | Register/login with Google credential |
 | GET | /api/foods | Get all foods |
 | GET | /api/foods/search?q=banana | Search foods |
 | GET | /api/foods/:id | Get food by ID |
 | POST | /api/calculate | Calculate daily calories |
 | GET | /api/meals/suggestions/:calories | Get meal suggestions |
+| GET/POST/DELETE | /api/symptoms | Manage symptom logs |
+| GET/POST/DELETE | /api/triggers | Manage trigger logs |
 
 ## Running Both Frontend and Backend
 

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import AuthStatus from './AuthStatus';
 
 export default function Nav() {
   const links = [
@@ -10,5 +11,5 @@ export default function Nav() {
     ['/trigger-journal', '📓 Triggers'],
     ['/education', '📚 Education'],
   ];
-  return <nav className="nav">{links.map(([href, label]) => <Link key={href} href={href}>{label}</Link>)}</nav>;
+  return <nav className="nav">{links.map(([href, label]) => <Link key={href} href={href}>{label}</Link>)}<AuthStatus /></nav>;
 }

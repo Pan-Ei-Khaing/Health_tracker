@@ -18,13 +18,17 @@ CREATE TABLE IF NOT EXISTS foods (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Users table (optional - for future use)
+-- Users table
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
     name VARCHAR(100),
     email VARCHAR(100) UNIQUE,
     password_hash VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    google_id VARCHAR(255) UNIQUE,
+    avatar_url TEXT,
+    auth_provider VARCHAR(30) DEFAULT 'local',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Diet Plans table
@@ -44,6 +48,33 @@ CREATE TABLE IF NOT EXISTS meals (
     portion VARCHAR(50),
     calories INTEGER,
     meal_type VARCHAR(20) CHECK (meal_type IN ('breakfast', 'lunch', 'dinner', 'snack')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Symptom Logs table
+CREATE TABLE IF NOT EXISTS symptom_logs (
+    symptom_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id),
+    symptom VARCHAR(100) NOT NULL,
+    severity INTEGER NOT NULL CHECK (severity BETWEEN 1 AND 10),
+    related_meal TEXT,
+    stress_level INTEGER CHECK (stress_level BETWEEN 1 AND 10),
+    sleep_quality VARCHAR(20) CHECK (sleep_quality IN ('Good', 'Okay', 'Poor')),
+    notes TEXT,
+    logged_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Trigger Journal table
+CREATE TABLE IF NOT EXISTS trigger_logs (
+    trigger_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id),
+    trigger_type VARCHAR(50) NOT NULL,
+    trigger_name VARCHAR(150) NOT NULL,
+    caused_symptoms VARCHAR(20) NOT NULL CHECK (caused_symptoms IN ('Yes', 'No', 'Not sure')),
+    related_symptom VARCHAR(100),
+    notes TEXT,
+    logged_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -147,9 +178,18 @@ INSERT INTO foods (food_name, category, gerd_level, calories_per_100g, portion_d
 CREATE INDEX IF NOT EXISTS idx_foods_name ON foods(food_name);
 CREATE INDEX IF NOT EXISTS idx_foods_category ON foods(category);
 CREATE INDEX IF NOT EXISTS idx_foods_gerd_level ON foods(gerd_level);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_google_id ON users(google_id) WHERE google_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_symptom_logs_user_id ON symptom_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_symptom_logs_logged_at ON symptom_logs(logged_at);
+CREATE INDEX IF NOT EXISTS idx_trigger_logs_user_id ON trigger_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_trigger_logs_name ON trigger_logs(trigger_name);
+CREATE INDEX IF NOT EXISTS idx_trigger_logs_logged_at ON trigger_logs(logged_at);
 
 -- ==================== COMMENTS ====================
 COMMENT ON TABLE foods IS 'Main food database with GERD safety levels';
 COMMENT ON TABLE users IS 'User accounts (optional feature)';
 COMMENT ON TABLE diet_plans IS 'User diet plans with calorie goals';
 COMMENT ON TABLE meals IS 'User meals with food items';
+COMMENT ON TABLE symptom_logs IS 'Patient symptom tracker logs';
+COMMENT ON TABLE trigger_logs IS 'Patient suspected trigger journal logs';
