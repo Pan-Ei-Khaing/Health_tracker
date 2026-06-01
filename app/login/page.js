@@ -27,12 +27,32 @@ export default function LoginPage() {
     router.push(authData.redirectTo || '/dashboard');
   };
 
+  const [googleReady, setGoogleReady] = useState(false);
+
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem(userKey) || 'null'));
+
+    if (window.google?.accounts?.id) {
+      setGoogleReady(true);
+      return;
+    }
+
+    const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+    if (existingScript) {
+      existingScript.addEventListener('load', () => setGoogleReady(true), { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => setGoogleReady(true);
+    document.head.appendChild(script);
   }, []);
 
   useEffect(() => {
-    if (!GOOGLE_CLIENT_ID || !window.google || renderedGoogleButton.current) return;
+    if (!GOOGLE_CLIENT_ID || !googleReady || !window.google || renderedGoogleButton.current) return;
 
     window.google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
@@ -66,7 +86,7 @@ export default function LoginPage() {
       width: 320,
     });
     renderedGoogleButton.current = true;
-  }, [router]);
+  }, [googleReady, router]);
 
   const signOut = () => {
     localStorage.removeItem(userKey);
@@ -77,7 +97,6 @@ export default function LoginPage() {
 
   return (
     <main className="page">
-      <script src="https://accounts.google.com/gsi/client" async defer></script>
       <Nav />
 
       <section className="hero" style={{ maxWidth: 760, margin: '48px auto 0', textAlign: 'center' }}>
