@@ -4,6 +4,7 @@ import Nav from '../components/Nav';
 import AuthRequired from '../components/AuthRequired';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const requiredErrorStyle = { color: '#dc2626', fontSize: '0.85rem', fontWeight: 600, marginTop: 6 };
 
 const plans = {
   gerd: {
@@ -36,7 +37,11 @@ export default function DietPlan() {
   const [hasCheckedSession, setHasCheckedSession] = useState(false);
   const [savedPlans, setSavedPlans] = useState([]);
   const [status, setStatus] = useState('Checking login...');
-  const update = (key, value) => setForm({ ...form, [key]: value });
+  const [errors, setErrors] = useState({});
+  const update = (key, value) => {
+    setForm((current) => ({ ...current, [key]: value }));
+    setErrors((current) => ({ ...current, [key]: '' }));
+  };
 
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem('healgut_current_user') || 'null');
@@ -58,7 +63,15 @@ export default function DietPlan() {
 
   const generatePlan = async () => {
     if (!user?.user_id) return setStatus('Please sign in before creating a diet plan.');
-    if (!form.weight || !form.height || !form.age) return alert('Please fill in weight, height, and age.');
+    const nextErrors = {};
+    ['weight', 'height', 'age'].forEach((key) => {
+      if (!form[key]) nextErrors[key] = 'This field is required';
+    });
+    if (Object.keys(nextErrors).length) {
+      setErrors(nextErrors);
+      return;
+    }
+    setErrors({});
     const bmr = 10 * Number(form.weight) + 6.25 * Number(form.height) - 5 * Number(form.age) + 5;
     const multiplier = { sedentary: 1.2, light: 1.375, moderate: 1.55, active: 1.725 }[form.activity];
     let calories = bmr * multiplier;
@@ -103,9 +116,9 @@ export default function DietPlan() {
       <section className="card" style={{ padding: 22, marginTop: 20 }}>
         <div className="grid grid-3">
           <div><label className="label">Condition</label><select className="input" value={form.condition} onChange={(e) => update('condition', e.target.value)}><option value="both">Both IBS + GERD</option><option value="ibs">IBS</option><option value="gerd">GERD</option></select></div>
-          <div><label className="label">Weight (kg)</label><input className="input" type="number" value={form.weight} onChange={(e) => update('weight', e.target.value)} /></div>
-          <div><label className="label">Height (cm)</label><input className="input" type="number" value={form.height} onChange={(e) => update('height', e.target.value)} /></div>
-          <div><label className="label">Age</label><input className="input" type="number" value={form.age} onChange={(e) => update('age', e.target.value)} /></div>
+          <div><label className="label">Weight (kg)</label><input className="input" type="number" value={form.weight} onChange={(e) => update('weight', e.target.value)} aria-invalid={Boolean(errors.weight)} aria-describedby={errors.weight ? 'weight-error' : undefined} />{errors.weight && <p id="weight-error" style={requiredErrorStyle}>{errors.weight}</p>}</div>
+          <div><label className="label">Height (cm)</label><input className="input" type="number" value={form.height} onChange={(e) => update('height', e.target.value)} aria-invalid={Boolean(errors.height)} aria-describedby={errors.height ? 'height-error' : undefined} />{errors.height && <p id="height-error" style={requiredErrorStyle}>{errors.height}</p>}</div>
+          <div><label className="label">Age</label><input className="input" type="number" value={form.age} onChange={(e) => update('age', e.target.value)} aria-invalid={Boolean(errors.age)} aria-describedby={errors.age ? 'age-error' : undefined} />{errors.age && <p id="age-error" style={requiredErrorStyle}>{errors.age}</p>}</div>
           <div><label className="label">Activity level</label><select className="input" value={form.activity} onChange={(e) => update('activity', e.target.value)}><option value="sedentary">Sedentary</option><option value="light">Light</option><option value="moderate">Moderate</option><option value="active">Active</option></select></div>
           <div><label className="label">Goal</label><select className="input" value={form.goal} onChange={(e) => update('goal', e.target.value)}><option value="maintain">Maintain weight</option><option value="gain">Gain weight (+500 cal)</option><option value="lose">Lose weight (-500 cal)</option></select></div>
           <div><label className="label">Food preference</label><select className="input" value={form.preference} onChange={(e) => update('preference', e.target.value)}><option value="normal">Normal diet</option><option value="vegetarian">Vegetarian</option><option value="low-fat">Low-fat</option><option value="low-fodmap">Low-FODMAP preference</option></select></div>
