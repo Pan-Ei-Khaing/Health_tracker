@@ -51,7 +51,7 @@ export default function DietPlan() {
       .then((res) => res.ok ? res.json() : [])
       .then((data) => {
         setSavedPlans(data);
-        setStatus('Connected to backend database');
+        setStatus('');
       })
       .catch(() => setStatus('Backend is not reachable; generated plan can be viewed but not saved.'));
   }, []);
@@ -92,7 +92,7 @@ export default function DietPlan() {
         <h1 style={{ fontSize: '2.6rem', margin: 0 }}>📋 IBS & GERD Diet Plan Generator</h1>
         <p>Generate a simple stomach-friendly plan for IBS, GERD, or both equally.</p>
       </section>
-      <p className="disclaimer" style={{ marginTop: 16 }}>{status}</p>
+      {status && <p className="disclaimer" style={{ marginTop: 16 }}>{status}</p>}
 
       {!hasCheckedSession ? (
         <section className="card" style={{ padding: 24, marginTop: 20, textAlign: 'center' }}>

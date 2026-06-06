@@ -42,7 +42,7 @@ export default function SymptomTracker() {
         const apiLogs = data.map(fromApi);
         setLogs(apiLogs);
         localStorage.setItem(storageKey, JSON.stringify(apiLogs));
-        setStatus('Connected to backend database');
+        setStatus('');
       } catch (err) {
         setLogs(JSON.parse(localStorage.getItem(storageKey) || '[]'));
         setStatus('Using browser local storage because backend is not reachable');
@@ -96,7 +96,7 @@ export default function SymptomTracker() {
     <main className="page">
       <Nav />
       <section className="hero"><h1 style={{ fontSize: '2.6rem', margin: 0 }}>🩺 Symptom Tracker</h1><p>Log symptoms and save them to the backend database when it is running.</p></section>
-      <p className="disclaimer" style={{ marginTop: 16 }}>{status}</p>
+      {status && <p className="disclaimer" style={{ marginTop: 16 }}>{status}</p>}
       {!hasCheckedSession ? (
         <section className="card" style={{ padding: 24, marginTop: 20, textAlign: 'center' }}>
           <h2>Loading your account...</h2>
