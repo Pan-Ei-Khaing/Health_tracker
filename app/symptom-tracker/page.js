@@ -22,6 +22,7 @@ export default function SymptomTracker() {
   const [logs, setLogs] = useState([]);
   const [status, setStatus] = useState('Checking login...');
   const [user, setUser] = useState(null);
+  const [hasCheckedSession, setHasCheckedSession] = useState(false);
   const [form, setForm] = useState({ symptom: 'Acid reflux', severity: 5, meal: '', stress: 3, sleep: 'Good', notes: '' });
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function SymptomTracker() {
       try {
         const currentUser = JSON.parse(localStorage.getItem('healgut_current_user') || 'null');
         setUser(currentUser);
+        setHasCheckedSession(true);
         if (!currentUser?.user_id) {
           setLogs([]);
           setStatus('Please sign in to view and save your symptom logs.');
@@ -95,7 +97,12 @@ export default function SymptomTracker() {
       <Nav />
       <section className="hero"><h1 style={{ fontSize: '2.6rem', margin: 0 }}>🩺 Symptom Tracker</h1><p>Log symptoms and save them to the backend database when it is running.</p></section>
       <p className="disclaimer" style={{ marginTop: 16 }}>{status}</p>
-      {!user ? <AuthRequired feature="the symptom tracker" /> : <>
+      {!hasCheckedSession ? (
+        <section className="card" style={{ padding: 24, marginTop: 20, textAlign: 'center' }}>
+          <h2>Loading your account...</h2>
+          <p style={{ color: '#4f6356', lineHeight: 1.6 }}>Checking your saved login before loading this module.</p>
+        </section>
+      ) : !user ? <AuthRequired feature="the symptom tracker" /> : <>
       <section className="grid grid-3" style={{ marginTop: 20 }}><div className="card" style={{ padding: 18 }}><strong>This week</strong><h2>{summary.week} logs</h2></div><div className="card" style={{ padding: 18 }}><strong>Most frequent</strong><h2>{summary.frequent ? `${summary.frequent[0]} (${summary.frequent[1]})` : 'None'}</h2></div><div className="card" style={{ padding: 18 }}><strong>High severity days</strong><h2>{summary.high}</h2></div></section>
       <section className="card" style={{ padding: 20, marginTop: 20 }}>
         <h2>New symptom log</h2>

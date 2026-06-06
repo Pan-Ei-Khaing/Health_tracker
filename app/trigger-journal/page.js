@@ -21,6 +21,7 @@ export default function TriggerJournal() {
   const [logs, setLogs] = useState([]);
   const [status, setStatus] = useState('Checking login...');
   const [user, setUser] = useState(null);
+  const [hasCheckedSession, setHasCheckedSession] = useState(false);
   const [form, setForm] = useState({ type: 'Food', name: '', caused: 'Yes', symptom: 'Reflux', notes: '' });
 
   useEffect(() => {
@@ -28,6 +29,7 @@ export default function TriggerJournal() {
       try {
         const currentUser = JSON.parse(localStorage.getItem('healgut_current_user') || 'null');
         setUser(currentUser);
+        setHasCheckedSession(true);
         if (!currentUser?.user_id) {
           setLogs([]);
           setStatus('Please sign in to view and save your trigger logs.');
@@ -91,7 +93,12 @@ export default function TriggerJournal() {
       <Nav />
       <section className="hero"><h1 style={{ fontSize: '2.6rem', margin: 0 }}>📓 Trigger Journal</h1><p>Connect symptoms with foods, drinks, stress, sleep, and meal timing to find repeated personal patterns.</p></section>
       <p className="disclaimer" style={{ marginTop: 16 }}>{status}</p>
-      {!user ? <AuthRequired feature="the trigger journal" /> : <>
+      {!hasCheckedSession ? (
+        <section className="card" style={{ padding: 24, marginTop: 20, textAlign: 'center' }}>
+          <h2>Loading your account...</h2>
+          <p style={{ color: '#4f6356', lineHeight: 1.6 }}>Checking your saved login before loading this module.</p>
+        </section>
+      ) : !user ? <AuthRequired feature="the trigger journal" /> : <>
         <section className="grid grid-2" style={{ marginTop: 20 }}>
           <div className="card" style={{ padding: 20 }}><h2>Log suspected trigger</h2><div className="grid"><div><label className="label">Trigger type</label><select className="input" value={form.type} onChange={(e) => update('type', e.target.value)}>{types.map((type) => <option key={type}>{type}</option>)}</select></div><div><label className="label">Trigger name</label><input className="input" value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="e.g., coffee, onion, late dinner" /></div><div><label className="label">Did it cause symptoms?</label><select className="input" value={form.caused} onChange={(e) => update('caused', e.target.value)}><option>Yes</option><option>No</option><option>Not sure</option></select></div><div><label className="label">Related symptom</label><input className="input" value={form.symptom} onChange={(e) => update('symptom', e.target.value)} /></div><div><label className="label">Notes</label><textarea className="input" value={form.notes} onChange={(e) => update('notes', e.target.value)} rows="3" /></div></div><button className="primary" style={{ marginTop: 14 }} onClick={addLog}>Save trigger</button></div>
           <div className="card" style={{ padding: 20 }}><h2>Pattern insights</h2>{patterns.length === 0 ? <p>No repeated triggers yet.</p> : patterns.map((item) => <div key={item.name} className="disclaimer" style={{ marginBottom: 10 }}><strong>{item.name}</strong><p>You logged {item.count} symptom event{item.count > 1 ? 's' : ''} after this trigger. It may be related to {item.symptom}.</p></div>)}<p><strong>Tip:</strong> IBS and GERD triggers are personal. Use repeated patterns, not one event, to guide decisions.</p></div>

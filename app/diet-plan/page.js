@@ -33,6 +33,7 @@ export default function DietPlan() {
   const [form, setForm] = useState({ condition: 'both', weight: '', height: '', age: '', activity: 'moderate', goal: 'maintain', preference: 'normal', avoid: '' });
   const [plan, setPlan] = useState(null);
   const [user, setUser] = useState(null);
+  const [hasCheckedSession, setHasCheckedSession] = useState(false);
   const [savedPlans, setSavedPlans] = useState([]);
   const [status, setStatus] = useState('Checking login...');
   const update = (key, value) => setForm({ ...form, [key]: value });
@@ -40,6 +41,7 @@ export default function DietPlan() {
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem('healgut_current_user') || 'null');
     setUser(currentUser);
+    setHasCheckedSession(true);
     if (!currentUser?.user_id) {
       setStatus('Please sign in to create and save diet plans.');
       return;
@@ -92,7 +94,12 @@ export default function DietPlan() {
       </section>
       <p className="disclaimer" style={{ marginTop: 16 }}>{status}</p>
 
-      {!user ? <AuthRequired feature="the diet plan generator" /> : <>
+      {!hasCheckedSession ? (
+        <section className="card" style={{ padding: 24, marginTop: 20, textAlign: 'center' }}>
+          <h2>Loading your account...</h2>
+          <p style={{ color: '#4f6356', lineHeight: 1.6 }}>Checking your saved login before loading this module.</p>
+        </section>
+      ) : !user ? <AuthRequired feature="the diet plan generator" /> : <>
       <section className="card" style={{ padding: 22, marginTop: 20 }}>
         <div className="grid grid-3">
           <div><label className="label">Condition</label><select className="input" value={form.condition} onChange={(e) => update('condition', e.target.value)}><option value="both">Both IBS + GERD</option><option value="ibs">IBS</option><option value="gerd">GERD</option></select></div>
