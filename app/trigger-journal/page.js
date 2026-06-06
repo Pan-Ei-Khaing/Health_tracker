@@ -44,7 +44,7 @@ export default function TriggerJournal() {
         setStatus('');
       } catch (err) {
         setLogs(JSON.parse(localStorage.getItem(storageKey) || '[]'));
-        setStatus('Using browser local storage because backend is not reachable');
+        setStatus('Using browser local storage because profile sync is not available');
       }
     };
     loadLogs();
@@ -70,10 +70,10 @@ export default function TriggerJournal() {
       if (!res.ok) throw new Error('API save failed');
       const saved = fromApi(await res.json());
       setLogs([saved, ...logs]);
-      setStatus('Saved to backend database');
+      setStatus('Saved to your profile');
     } catch (err) {
       setLogs([{ ...form, id: Date.now(), createdAt: new Date().toISOString() }, ...logs]);
-      setStatus('Saved locally only because backend is not reachable');
+      setStatus('Saved locally only because profile sync is not available');
     }
     setForm({ type: 'Food', name: '', caused: 'Yes', symptom: 'Reflux', notes: '' });
   };

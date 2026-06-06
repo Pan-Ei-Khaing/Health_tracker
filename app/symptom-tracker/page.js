@@ -45,7 +45,7 @@ export default function SymptomTracker() {
         setStatus('');
       } catch (err) {
         setLogs(JSON.parse(localStorage.getItem(storageKey) || '[]'));
-        setStatus('Using browser local storage because backend is not reachable');
+        setStatus('Using browser local storage because profile sync is not available');
       }
     };
     loadLogs();
@@ -70,10 +70,10 @@ export default function SymptomTracker() {
       if (!res.ok) throw new Error('API save failed');
       const saved = fromApi(await res.json());
       setLogs([saved, ...logs]);
-      setStatus('Saved to backend database');
+      setStatus('Saved to your profile');
     } catch (err) {
       setLogs([{ ...form, id: Date.now(), createdAt: new Date().toISOString() }, ...logs]);
-      setStatus('Saved locally only because backend is not reachable');
+      setStatus('Saved locally only because profile sync is not available');
     }
     setForm({ symptom: 'Acid reflux', severity: 5, meal: '', stress: 3, sleep: 'Good', notes: '' });
   };
@@ -95,7 +95,7 @@ export default function SymptomTracker() {
   return (
     <main className="page">
       <Nav />
-      <section className="hero"><h1 style={{ fontSize: '2.6rem', margin: 0 }}>🩺 Symptom Tracker</h1><p>Log symptoms and save them to the backend database when it is running.</p></section>
+      <section className="hero"><h1 style={{ fontSize: '2.6rem', margin: 0 }}>🩺 Symptom Tracker</h1><p>Log symptoms and save them to your profile when sync is available.</p></section>
       {status && <p className="disclaimer" style={{ marginTop: 16 }}>{status}</p>}
       {!hasCheckedSession ? (
         <section className="card" style={{ padding: 24, marginTop: 20, textAlign: 'center' }}>
